@@ -1,4 +1,5 @@
 import React from "react";
+import { getArrBorderElements } from "../../utils/border";
 import styled from "styled-components";
 
 interface IVerticalElement {
@@ -9,8 +10,10 @@ interface IHorizontalElement {
   col: number;
 }
 
-const hor = "ABCDEFGH";
-const vert = "12345678";
+interface ICorner {
+  top: boolean;
+  left: boolean;
+}
 
 const Container = styled.div`
   user-select: none;
@@ -38,15 +41,15 @@ const VerticalElement = styled(Element)<IVerticalElement>`
   top: ${({ row }) => 87.5 - row * 12.5}%;
 `;
 
-const TopElement = styled(HorizontalElement)<IHorizontalElement>`
+const BottomElement = styled(HorizontalElement)<IHorizontalElement>`
   bottom: -5%;
 `;
 
-const BottomElement = styled(HorizontalElement)<IHorizontalElement>`
+const TopElement = styled(HorizontalElement)<IHorizontalElement>`
   top: -5%;
 `;
 
-const LeftEleemnt = styled(VerticalElement)<IVerticalElement>`
+const LeftElement = styled(VerticalElement)<IVerticalElement>`
   left: -5%;
 `;
 
@@ -54,21 +57,24 @@ const RightElement = styled(VerticalElement)<IVerticalElement>`
   right: -5%;
 `;
 
+const Corner = styled(Element)<ICorner>`
+  height: 5%;
+  width: 5%;
+  top: ${({ top }) => (top ? -5 : 100)}%;
+  left: ${({ left }) => (left ? -5 : 100)}%;
+`;
+
 const Border: React.FC = (): JSX.Element => {
   return (
     <Container>
-      {new Array(8).fill(0).map((x, i) => (
-        <BottomElement col={i} key={i}>{hor[i]}</BottomElement>
-      ))}
-      {new Array(8).fill(0).map((x, i) => (
-        <TopElement col={i} key={i}>{hor[i]}</TopElement>
-      ))}
-      {new Array(8).fill(0).map((x, i) => (
-        <LeftEleemnt row={i} key={i}>{vert[i]}</LeftEleemnt>
-      ))}
-      {new Array(8).fill(0).map((x, i) => (
-        <RightElement row={i} key={i}>{vert[i]}</RightElement>
-      ))}
+      {getArrBorderElements(BottomElement, true)}
+      {getArrBorderElements(TopElement, true)}
+      {getArrBorderElements(LeftElement, false)}
+      {getArrBorderElements(RightElement, false)}
+      <Corner top={true} left={true} />
+      <Corner top={true} left={false} />
+      <Corner top={false} left={false} />
+      <Corner top={false} left={true} />
     </Container>
   );
 };

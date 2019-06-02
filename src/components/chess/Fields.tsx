@@ -1,15 +1,9 @@
 import React from "react";
-import {getInitFieldArray, IField} from "../../utils/field";
-import Field from "./Field";
+import { getJSXFieldArray } from "../../utils/field";
 
 const Fields: React.FC = (): JSX.Element => {
-  return (
-    <div>
-      {getInitFieldArray().map((field:IField):JSX.Element => {
-        return <Field key={`${field.row}_${field.col}`} {...field}/>
-      })}
-    </div>
-  );
+  const fieldArray: Array<JSX.Element> = getJSXFieldArray();
+  return <div>{fieldArray}</div>;
 };
 
 export default Fields;

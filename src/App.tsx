@@ -1,5 +1,5 @@
-import React, {Fragment} from "react";
-import styled, {createGlobalStyle} from "styled-components";
+import React, { Fragment } from "react";
+import styled, { createGlobalStyle } from "styled-components";
 import Board from "./components/chess/Board";
 
 const GlobalStyle = createGlobalStyle`
@@ -9,7 +9,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     font-family: sans serif;
   }
-`
+`;
 
 const Container = styled.div`
   width: 100%;
@@ -17,14 +17,14 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`
+`;
 
 const App: React.FC = (): JSX.Element => {
   return (
-    <Fragment>  
+    <Fragment>
       <GlobalStyle />
       <Container>
-        <Board data-test="chessBoardComponent">Welcome</Board>
+        <Board />
       </Container>
     </Fragment>
   );
