@@ -2,13 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import { IField } from "../../utils/field";
 
-interface IFieldContainer {
+interface FieldContainer {
   row: number;
   col: number;
   isWhite: boolean;
 }
 
-const Container = styled.div<IFieldContainer>`
+const Container = styled.div<FieldContainer>`
   position: absolute;
   width: 12.5%;
   height: 12.5%;

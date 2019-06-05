@@ -1,8 +1,15 @@
 import styled from "styled-components";
-import { IPiece } from "../../../utils/piece";
+import { PieceType } from "../../../utils/piece";
 import { getImage } from "../../../utils/image";
 
-export const Piece = styled.div<IPiece>`
+interface PieceStyle {
+  row: number;
+  col: number;
+  type: PieceType;
+  isWhite: boolean;
+}
+
+export const Piece = styled.div<PieceStyle>`
   position: absolute;
   width: 12.5%;
   height: 12.5%;

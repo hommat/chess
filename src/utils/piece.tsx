@@ -1,8 +1,9 @@
 import React from "react";
+import { IPiecesById } from "../store/board/types";
 import Bishop from "../components/chess/pieces/Bishop";
 import King from "../components/chess/pieces/King";
 import Knight from "../components/chess/pieces/Knight";
-import Pawn from "../components/chess/pieces/Bishop";
+import Pawn from "../components/chess/pieces/Pawn";
 import Queen from "../components/chess/pieces/Queen";
 import Rook from "../components/chess/pieces/Rook";
 
@@ -16,7 +17,7 @@ export enum PieceType {
 }
 
 export interface IPiece {
-  id?: number;
+  id: string;
   type: PieceType;
   col: number;
   row: number;
@@ -24,33 +25,35 @@ export interface IPiece {
 }
 
 export const getJSXPieceArray = (
-  pieceArray: Array<IPiece> = getInitPieceArray()
+  piecesById: IPiecesById
 ): Array<JSX.Element> => {
-  return pieceArray.map(getJSXPiece);
+  return byIdToPieceArray(piecesById).map(getJSXPiece);
 };
 
 const getJSXPiece = (props: IPiece): JSX.Element => {
-  const { type, id, ...rest } = props;
-  switch (type) {
-    case PieceType.Bishop:
-      return <Bishop key={id} type={type} {...rest} />;
-    case PieceType.King:
-      return <King key={id} type={type} {...rest} />;
-    case PieceType.Knight:
-      return <Knight key={id} type={type} {...rest} />;
-    case PieceType.Pawn:
-      return <Pawn key={id} type={type} {...rest} />;
-    case PieceType.Queen:
-      return <Queen key={id} type={type} {...rest} />;
-    case PieceType.Rook:
-      return <Rook key={id} type={type} {...rest} />;
-    default:
-      return <Pawn key={id} type={type} {...rest} />;
-  }
+  const propsObj = { key: props.id, id: props.id };
+  return <Bishop {...propsObj} />;
+  // switch (props.type) {
+  //   case PieceType.Bishop:
+  //     return <Bishop {...propsObj} />;
+  //   case PieceType.King:
+  //     return <King {...propsObj} />;
+  //   case PieceType.Knight:
+  //     return <Knight {...propsObj} />;
+  //   case PieceType.Pawn:
+  //     return <Pawn {...propsObj} />;
+  //   case PieceType.Queen:
+  //     return <Queen {...propsObj} />;
+  //   case PieceType.Rook:
+  //     return <Rook {...propsObj} />;
+  //   default:
+  //     return <Pawn {...propsObj} />;
+  // }
 };
 
-const getInitPieceArray = (): Array<IPiece> => {
-  const pieceArray: Array<IPiece> = [];
+export const getInitPieceArray = (): IPiecesById => {
+  const piecesById: IPiecesById = {};
+
   for (let i = 0; i < 2; i++) {
     const baseId: number = i * 16;
     const baseRow: number = i * 7;
@@ -59,72 +62,80 @@ const getInitPieceArray = (): Array<IPiece> => {
     const endPawnLoop: number = baseId + 16;
     const isWhite: boolean = i === 0;
 
-    pieceArray.push({
-      id: baseId + 0,
+    piecesById[baseId.toString()] = {
       type: PieceType.Rook,
       col: 0,
       row: baseRow,
       isWhite: isWhite
-    });
-    pieceArray.push({
-      id: baseId + 1,
+    };
+    piecesById[(baseId + 1).toString()] = {
       type: PieceType.Knight,
       col: 1,
       row: baseRow,
       isWhite: isWhite
-    });
-    pieceArray.push({
-      id: baseId + 2,
+    };
+    piecesById[(baseId + 2).toString()] = {
       type: PieceType.Bishop,
       col: 2,
       row: baseRow,
       isWhite: isWhite
-    });
-    pieceArray.push({
-      id: baseId + 3,
+    };
+    piecesById[(baseId + 3).toString()] = {
       type: PieceType.Queen,
       col: 3,
       row: baseRow,
       isWhite: isWhite
-    });
-    pieceArray.push({
-      id: baseId + 4,
+    };
+    piecesById[(baseId + 4).toString()] = {
       type: PieceType.King,
       col: 4,
       row: baseRow,
       isWhite: isWhite
-    });
-    pieceArray.push({
-      id: baseId + 5,
+    };
+    piecesById[(baseId + 5).toString()] = {
       type: PieceType.Bishop,
       col: 5,
       row: baseRow,
       isWhite: isWhite
-    });
-    pieceArray.push({
-      id: baseId + 6,
+    };
+    piecesById[(baseId + 6).toString()] = {
       type: PieceType.Knight,
       col: 6,
       row: baseRow,
       isWhite: isWhite
-    });
-    pieceArray.push({
-      id: baseId + 7,
+    };
+    piecesById[(baseId + 7).toString()] = {
       type: PieceType.Rook,
       col: 7,
       row: baseRow,
       isWhite: isWhite
-    });
+    };
     for (let j = startPawnLoop; j < endPawnLoop; j++) {
-      pieceArray.push({
-        id: j,
+      piecesById[j.toString()] = {
         type: PieceType.Pawn,
         col: j - startPawnLoop,
         row: pawnRow,
         isWhite: isWhite
-      });
+      };
     }
   }
+  return piecesById;
+};
 
+const byIdToPieceArray = (piecesById: IPiecesById): Array<IPiece> => {
+  const pieceArray: Array<IPiece> = [];
+  for (let proprerty in piecesById) {
+    pieceArray.push({ id: proprerty, ...piecesById[proprerty] });
+  }
   return pieceArray;
+};
+
+export const filterByIdObj = (
+  piecesById: IPiecesById,
+  allIds: Array<string>
+): IPiecesById => {
+  const piecesObjIds = Object.getOwnPropertyNames(piecesById);
+  const idsToRemove = piecesObjIds.filter(id => allIds.indexOf(id) === -1);
+  idsToRemove.forEach(id => delete piecesById[id]);
+  return piecesById;
 };

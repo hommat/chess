@@ -1,10 +1,11 @@
 import React from "react";
+import { StyledComponent, DefaultTheme } from "styled-components";
 
 const hor = "ABCDEFGH";
 const vert = "12345678";
 
 export const getArrBorderElements = (
-  BorderElement: any,
+  BorderElement: StyledComponent<"div", DefaultTheme>,
   hasCol: boolean
 ): Array<JSX.Element> => {
   const charArr = hasCol ? hor : vert;

@@ -1,10 +1,27 @@
 import React from "react";
-import { IPiece } from "../../../utils/piece";
+import { AppState } from "../../../store/rootReducer";
+import { IPieceData } from "../../../store/board/types";
+import { connect } from "react-redux";
 import { Piece } from "./styles";
 
-const Rook: React.FC<IPiece> = (props): JSX.Element => {
-  const { id, ...rest } = props;
-  return <Piece {...rest} />;
+interface IStateProps {
+  data: IPieceData;
+}
+
+interface IOwnProps {
+  id: string;
+}
+
+type Props = IStateProps & IOwnProps;
+
+const Rook: React.FC<Props> = ({ id, data }): JSX.Element => {
+  return <Piece {...data} />;
 };
 
-export default Rook;
+const mapStateToProps = (state: AppState, ownProps: IOwnProps): IStateProps => {
+  return {
+    data: state.board.pieces.byId[ownProps.id]
+  };
+};
+
+export default connect(mapStateToProps)(Rook);
