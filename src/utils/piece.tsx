@@ -1,11 +1,11 @@
 import React from "react";
 import { IPiecesById } from "../store/board/types";
 import Bishop from "../components/chess/pieces/Bishop";
-import King from "../components/chess/pieces/King";
-import Knight from "../components/chess/pieces/Knight";
-import Pawn from "../components/chess/pieces/Pawn";
-import Queen from "../components/chess/pieces/Queen";
-import Rook from "../components/chess/pieces/Rook";
+// import King from "../components/chess/pieces/King";
+// import Knight from "../components/chess/pieces/Knight";
+// import Pawn from "../components/chess/pieces/Pawn";
+// import Queen from "../components/chess/pieces/Queen";
+// import Rook from "../components/chess/pieces/Rook";
 
 export enum PieceType {
   Pawn,

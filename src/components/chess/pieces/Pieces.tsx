@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { AppState } from "../../../store/rootReducer";
-import { IBoardState } from "../../../store/board/types";
+import { IApplicationState } from "../../../store";
+import { BoardState } from "../../../store/board/types";
 import { connect } from "react-redux";
 import { getJSXPieceArray } from "../../../utils/piece";
 
 interface IStateProps {
-  board: IBoardState;
+  board: BoardState;
 }
 
 type Props = IStateProps;
@@ -23,7 +23,7 @@ class Pieces extends Component<Props, {}> {
   }
 }
 
-const mapStateToProps = (state: AppState): IStateProps => {
+const mapStateToProps = (state: IApplicationState): IStateProps => {
   return {
     board: state.board
   };

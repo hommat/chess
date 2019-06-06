@@ -1,27 +1,29 @@
+import { action } from "typesafe-actions";
 import store from "../index";
 import { BoardActionTypes, IPiecesById, IMove } from "./types";
-import Constants from "./constants";
 import { getInitPieceArray, filterByIdObj } from "../../utils/piece";
 import { deepCopy } from "../../utils/objects";
 
-export const resetBoard = (): BoardActionTypes => {
+export const setSize = (size: number) => {
+  return action(BoardActionTypes.SET_SIZE, size);
+};
+
+export const resetBoard = () => {
   const newById: IPiecesById = getInitPieceArray();
   const newAllIds: Array<string> = [];
 
   for (let property in newById) {
     newAllIds.push(property);
   }
-
-  return {
-    type: Constants.RESET_BOARD,
-    payload: {
-      byId: newById,
-      allIds: newAllIds
-    }
+  const payload = {
+    byId: newById,
+    allIds: newAllIds
   };
+
+  return action(BoardActionTypes.RESET, payload);
 };
 
-export const move = (moveData: IMove): BoardActionTypes => {
+export const move = (moveData: IMove) => {
   const { id, targetCol, targetRow } = moveData;
   const { byId, allIds } = store.getState().board.pieces;
 
@@ -37,11 +39,10 @@ export const move = (moveData: IMove): BoardActionTypes => {
     newById = filterByIdObj(deepByIdCopy, newAllIds);
   }
 
-  return {
-    type: Constants.MOVE,
-    payload: {
-      byId: newById,
-      allIds: newAllIds
-    }
+  const payload = {
+    byId: newById,
+    allIds: newAllIds
   };
+
+  return action(BoardActionTypes.MOVE, payload);
 };

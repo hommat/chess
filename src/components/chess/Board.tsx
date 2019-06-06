@@ -2,32 +2,31 @@ import React, { Component } from "react";
 import { Dispatch } from "redux";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { resetBoard } from "../../store/board/actions";
+import { resetBoard, setSize } from "../../store/board/actions";
+import { IApplicationState } from "../../store";
 import Border from "./Border";
 import Fields from "./Fields";
 import Pieces from "./pieces/Pieces";
 import TestElement from "./TestElement";
 
-interface IDispatchProps {
-  resetBoard: () => void;
-}
-
-type Props = IDispatchProps;
-
-interface IState {
+interface IStateProps {
   size: number;
 }
 
-const Container = styled.div<IState>`
+interface IDispatchProps {
+  resetBoard: () => void;
+  setSize: (size: number) => void;
+}
+
+type Props = IDispatchProps & IStateProps;
+
+const Container = styled.div<IStateProps>`
   position: relative;
   width: ${({ size }) => size}px;
   height: ${({ size }) => size}px;
 `;
 
-class Board extends Component<Props, IState> {
-  readonly state: IState = {
-    size: 0
-  };
+class Board extends Component<Props, {}> {
   componentDidMount() {
     window.addEventListener("resize", this.setBorderSize);
     this.props.resetBoard();
@@ -42,11 +41,13 @@ class Board extends Component<Props, IState> {
     const newSize = Math.floor(
       (Math.min(innerWidth, innerHeight) * screenPercent) / 100
     );
-    if (this.state.size !== newSize) this.setState({ size: newSize });
+    if (this.props.size !== newSize) {
+      this.props.setSize(newSize);
+    }
   };
   render() {
     return (
-      <Container size={this.state.size}>
+      <Container size={this.props.size}>
         <TestElement />
         <Border />
         <Fields />
@@ -55,14 +56,20 @@ class Board extends Component<Props, IState> {
     );
   }
 }
+const mapStateToProps = (state: IApplicationState) => {
+  return {
+    size: state.board.size
+  };
+};
 
 const mapDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
   return {
-    resetBoard: () => dispatch(resetBoard())
+    resetBoard: () => dispatch(resetBoard()),
+    setSize: (size: number) => dispatch(setSize(size))
   };
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(Board);

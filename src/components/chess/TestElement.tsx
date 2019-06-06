@@ -1,17 +1,17 @@
 import React from "react";
-import { AppState } from "../../store/rootReducer";
-import { IBoardState } from "../../store/board/types";
+import { IApplicationState } from "../../store";
+import { BoardState } from "../../store/board/types";
 import { connect } from "react-redux";
 
 interface ITestProps {
-  board: IBoardState;
+  board: BoardState;
 }
 
 const TestElement: React.FC<ITestProps> = props => {
   return <h1>text</h1>;
 };
 
-const mapStateToProps = (state: AppState) => {
+const mapStateToProps = (state: IApplicationState) => {
   return {
     board: state.board
   };

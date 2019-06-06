@@ -10,7 +10,9 @@
     "react-scripts": "3.0.1",
     "redux-thunk": "^2.3.0",
     "styled-components": "^4.2.1",
-    "typescript": "3.5.1"
+    "typesafe-actions": "^4.4.0",
+    "typescript": "3.5.1",
+    "utility-types": "^3.7.0"
   },
   "scripts": {
     "start": "react-scripts start",

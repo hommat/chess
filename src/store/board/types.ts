@@ -1,13 +1,10 @@
 import { PieceType } from "../../utils/piece";
+import { DeepReadonly } from "utility-types";
 
-export interface IBoardState {
+export type BoardState = DeepReadonly<{
   pieces: IPieces;
-}
-
-interface IPieces {
-  byId: IPiecesById;
-  allIds: Array<string>;
-}
+  size: number;
+}>;
 
 export interface IPiecesById {
   [id: string]: IPieceData;
@@ -20,14 +17,9 @@ export interface IPieceData {
   type: PieceType;
 }
 
-interface IResetBoardAction {
-  type: string;
-  payload: IPieces;
-}
-
-interface IMoveAction {
-  type: string;
-  payload: IPieces;
+interface IPieces {
+  byId: IPiecesById;
+  allIds: Array<string>;
 }
 
 export interface IMove {
@@ -36,4 +28,8 @@ export interface IMove {
   targetCol: number;
 }
 
-export type BoardActionTypes = IResetBoardAction | IMoveAction;
+export enum BoardActionTypes {
+  RESET = "@@board/BOARD",
+  MOVE = "@@board/MOVE",
+  SET_SIZE = "@@board/SET_SIZE"
+}

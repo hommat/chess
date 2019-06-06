@@ -1,7 +1,17 @@
-import { createStore, compose, applyMiddleware } from "redux";
-import thunk from "redux-thunk";
-import rootReducer from "./rootReducer";
+import { createStore, combineReducers } from "redux";
 
-const store = createStore(rootReducer, compose(applyMiddleware(thunk)));
+import { BoardState } from "./board/types";
+import { boardReducer } from "./board/reducer";
+
+export interface IApplicationState {
+  board: BoardState;
+}
+
+const createRootReducer = () =>
+  combineReducers({
+    board: boardReducer
+  });
+
+const store = createStore(createRootReducer());
 
 export default store;
