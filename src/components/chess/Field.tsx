@@ -18,10 +18,7 @@ const Container = styled.div<FieldContainer>`
 `;
 
 const Field: React.FC<IField> = ({ row, col, isWhite }): JSX.Element => {
-  const handleClick = (e: any) => console.log(row, col);
-  return (
-    <Container row={row} col={col} isWhite={isWhite} onClick={handleClick} />
-  );
+  return <Container row={row} col={col} isWhite={isWhite} />;
 };
 
 export default Field;

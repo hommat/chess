@@ -7,7 +7,6 @@ import { IApplicationState } from "../../store";
 import Border from "./Border";
 import Fields from "./Fields";
 import Pieces from "./pieces/Pieces";
-import TestElement from "./TestElement";
 
 interface IStateProps {
   size: number;
@@ -48,7 +47,6 @@ class Board extends Component<Props, {}> {
   render() {
     return (
       <Container size={this.props.size}>
-        <TestElement />
         <Border />
         <Fields />
         <Pieces />

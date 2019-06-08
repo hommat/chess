@@ -15,6 +15,9 @@ export interface IPieceData {
   row: number;
   isWhite: boolean;
   type: PieceType;
+  everMoved?: boolean;
+  canBeCaptured?: boolean;
+  castled?: boolean;
 }
 
 interface IPieces {
@@ -24,12 +27,18 @@ interface IPieces {
 
 export interface IMove {
   id: string;
-  targetRow: number;
-  targetCol: number;
+  position: IPosition;
+}
+
+export interface IPosition {
+  row: number;
+  col: number;
 }
 
 export enum BoardActionTypes {
   RESET = "@@board/BOARD",
   MOVE = "@@board/MOVE",
+  MOVE_FAILED = "@@board/MOVE_FAILED",
+  CAPTURE_IN_PASSING = "@@board/CAPTURE_IN_PASSING",
   SET_SIZE = "@@board/SET_SIZE"
 }

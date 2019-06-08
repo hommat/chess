@@ -50,19 +50,28 @@ class Bishop extends Component<Props, IState> {
       mouseY: e.clientY
     });
   };
-  handleMouseUp = (): void => {
-    if (this.state.mousePressing) {
-      window.removeEventListener("mouseup", this.handleMouseUp);
-      window.removeEventListener("mousemove", this.handleMouseMove);
-      this.setState({ mousePressing: false, mouseX: -1, mouseY: -1 });
-    }
-  };
   handleMouseMove = (e: MouseEvent): void => {
     if (this.state.mousePressing) {
       this.setState({ mouseX: e.clientX, mouseY: e.clientY });
     }
   };
-  getAbsoluteStyle = (): CSSProperties => {
+  handleMouseUp = (): void => {
+    if (this.state.mousePressing) {
+      window.removeEventListener("mouseup", this.handleMouseUp);
+      window.removeEventListener("mousemove", this.handleMouseMove);
+
+      const { mouseX, mouseY } = this.state;
+      const { size, id, move } = this.props;
+      const x = mouseX - window.innerWidth / 2 + size / 2;
+      const y = mouseY - window.innerHeight / 2 + size / 2;
+      const col = 7 - Math.floor(x / (size / 8));
+      const row = 7 - Math.floor(y / (size / 8));
+
+      move({ id, position: { col, row } });
+      this.setState({ mousePressing: false, mouseX: -1, mouseY: -1 });
+    }
+  };
+  getStyle = (): CSSProperties => {
     if (this.state.mousePressing) return this.getMovingStyle();
     else return this.getStaticStyle();
   };
@@ -71,7 +80,7 @@ class Bishop extends Component<Props, IState> {
     const { size } = this.props;
     const x = mouseX - window.innerWidth / 2 + size / 2 - size / 16;
     const y = mouseY - window.innerHeight / 2 + size / 2 - size / 16;
-    return { left: `${x.toString()}px`, top: `${y.toString()}px` };
+    return { left: `${x.toString()}px`, top: `${y.toString()}px`, zIndex: 10 };
   };
   getStaticStyle = (): CSSProperties => {
     const { row, col } = this.props.data;
@@ -83,7 +92,7 @@ class Bishop extends Component<Props, IState> {
         {...this.props.data}
         onMouseDown={this.handleMouseDown}
         onMouseUp={this.handleMouseUp}
-        style={this.getAbsoluteStyle()}
+        style={this.getStyle()}
       />
     );
   }

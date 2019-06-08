@@ -13,6 +13,7 @@ const reducer: Reducer<BoardState> = (state = initState, action) => {
   switch (action.type) {
     case BoardActionTypes.RESET:
     case BoardActionTypes.MOVE:
+    case BoardActionTypes.CAPTURE_IN_PASSING:
       return {
         ...state,
         pieces: {
@@ -25,6 +26,7 @@ const reducer: Reducer<BoardState> = (state = initState, action) => {
         ...state,
         size: action.payload
       };
+    case BoardActionTypes.MOVE_FAILED:
     default:
       return state;
   }

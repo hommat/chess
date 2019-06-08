@@ -1,11 +1,6 @@
 import React from "react";
 import { IPiecesById } from "../store/board/types";
 import Bishop from "../components/chess/pieces/Bishop";
-// import King from "../components/chess/pieces/King";
-// import Knight from "../components/chess/pieces/Knight";
-// import Pawn from "../components/chess/pieces/Pawn";
-// import Queen from "../components/chess/pieces/Queen";
-// import Rook from "../components/chess/pieces/Rook";
 
 export enum PieceType {
   Pawn,
@@ -22,6 +17,9 @@ export interface IPiece {
   col: number;
   row: number;
   isWhite: boolean;
+  everMoved?: boolean;
+  movedTwo?: boolean;
+  castled?: boolean;
 }
 
 export const getJSXPieceArray = (
@@ -33,22 +31,6 @@ export const getJSXPieceArray = (
 const getJSXPiece = (props: IPiece): JSX.Element => {
   const propsObj = { key: props.id, id: props.id };
   return <Bishop {...propsObj} />;
-  // switch (props.type) {
-  //   case PieceType.Bishop:
-  //     return <Bishop {...propsObj} />;
-  //   case PieceType.King:
-  //     return <King {...propsObj} />;
-  //   case PieceType.Knight:
-  //     return <Knight {...propsObj} />;
-  //   case PieceType.Pawn:
-  //     return <Pawn {...propsObj} />;
-  //   case PieceType.Queen:
-  //     return <Queen {...propsObj} />;
-  //   case PieceType.Rook:
-  //     return <Rook {...propsObj} />;
-  //   default:
-  //     return <Pawn {...propsObj} />;
-  // }
 };
 
 export const getInitPieceArray = (): IPiecesById => {
@@ -66,7 +48,8 @@ export const getInitPieceArray = (): IPiecesById => {
       type: PieceType.Rook,
       col: 0,
       row: baseRow,
-      isWhite: isWhite
+      isWhite: isWhite,
+      everMoved: false
     };
     piecesById[(baseId + 1).toString()] = {
       type: PieceType.Knight,
@@ -90,7 +73,9 @@ export const getInitPieceArray = (): IPiecesById => {
       type: PieceType.King,
       col: 4,
       row: baseRow,
-      isWhite: isWhite
+      isWhite: isWhite,
+      everMoved: false,
+      castled: false
     };
     piecesById[(baseId + 5).toString()] = {
       type: PieceType.Bishop,
@@ -108,14 +93,16 @@ export const getInitPieceArray = (): IPiecesById => {
       type: PieceType.Rook,
       col: 7,
       row: baseRow,
-      isWhite: isWhite
+      isWhite: isWhite,
+      everMoved: false
     };
     for (let j = startPawnLoop; j < endPawnLoop; j++) {
       piecesById[j.toString()] = {
         type: PieceType.Pawn,
         col: j - startPawnLoop,
         row: pawnRow,
-        isWhite: isWhite
+        isWhite: isWhite,
+        canBeCaptured: false
       };
     }
   }
