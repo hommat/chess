@@ -7,14 +7,12 @@ import {
   IPosition
 } from "../../store/board/types";
 
-export const getCapturingInPassData = (
+export const getCaptureInPassData = (
   movedPiece: IPieceData,
   moveData: IMove,
-  targetPiece: IPieceData | null,
   piecesById: IPiecesById
 ): string | null => {
   const { row, col, isWhite } = movedPiece;
-  if (targetPiece) return null;
 
   const ownRequiredRow = isWhite ? 4 : 3;
   if (row !== ownRequiredRow) return null;
@@ -42,7 +40,7 @@ export const unableCaptureForColor = (
   byId: IPiecesById
 ): void => {
   for (let id in byId) {
-    if (byId[id].isWhite === isWhite && byId[id].canBeCaptured) {
+    if (byId[id].isWhite === isWhite && byId[id].type === PieceType.Pawn) {
       byId[id].canBeCaptured = false;
     }
   }

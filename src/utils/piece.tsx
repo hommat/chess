@@ -1,6 +1,6 @@
 import React from "react";
 import { IPiecesById } from "../store/board/types";
-import Bishop from "../components/chess/pieces/Bishop";
+import Piece from "../components/chess/pieces/Piece";
 
 export enum PieceType {
   Pawn,
@@ -30,7 +30,7 @@ export const getJSXPieceArray = (
 
 const getJSXPiece = (props: IPiece): JSX.Element => {
   const propsObj = { key: props.id, id: props.id };
-  return <Bishop {...propsObj} />;
+  return <Piece {...propsObj} />;
 };
 
 export const getInitPieceArray = (): IPiecesById => {

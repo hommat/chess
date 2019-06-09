@@ -3,8 +3,8 @@ export function deepCopy<T>(obj: T): T {
 }
 
 export const areObjEqual = (obj1: {}, obj2: {}): boolean => {
-  const values1 = Object.entries(obj1).map(([key, value]) => value);
-  const values2 = Object.entries(obj2).map(([key, value]) => value);
+  const values1 = Object.entries(obj1).map(([_, value]) => value);
+  const values2 = Object.entries(obj2).map(([_, value]) => value);
   let r = true;
   for (let i = 0; i < values1.length; i++) {
     if (values1[i] !== values2[i]) {

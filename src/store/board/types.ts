@@ -39,6 +39,5 @@ export enum BoardActionTypes {
   RESET = "@@board/BOARD",
   MOVE = "@@board/MOVE",
   MOVE_FAILED = "@@board/MOVE_FAILED",
-  CAPTURE_IN_PASSING = "@@board/CAPTURE_IN_PASSING",
   SET_SIZE = "@@board/SET_SIZE"
 }

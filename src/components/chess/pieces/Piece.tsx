@@ -64,7 +64,7 @@ class Bishop extends Component<Props, IState> {
       const { size, id, move } = this.props;
       const x = mouseX - window.innerWidth / 2 + size / 2;
       const y = mouseY - window.innerHeight / 2 + size / 2;
-      const col = 7 - Math.floor(x / (size / 8));
+      const col = 7 - (7 - Math.floor(x / (size / 8)));
       const row = 7 - Math.floor(y / (size / 8));
 
       move({ id, position: { col, row } });
@@ -84,7 +84,7 @@ class Bishop extends Component<Props, IState> {
   };
   getStaticStyle = (): CSSProperties => {
     const { row, col } = this.props.data;
-    return { left: `${87.5 - 12.5 * col}%`, top: `${87.5 - 12.5 * row}%` };
+    return { left: `${12.5 * col}%`, top: `${87.5 - 12.5 * row}%` };
   };
   render() {
     return (

@@ -19,7 +19,7 @@ export const getJSXFieldArray = (
 
 const getInitFieldArray = (): Array<IField> => {
   const fieldsArray: Array<IField> = [];
-  let isWhite: boolean = true;
+  let isWhite: boolean = false;
   for (let row = 0; row < 8; row++) {
     isWhite = !isWhite;
     for (let col = 0; col < 8; col++) {

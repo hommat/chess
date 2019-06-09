@@ -6,18 +6,33 @@ import {
 } from "../../store/board/types";
 import { PieceType } from "../piece";
 import { isPawnMoveValid } from "./pawn";
+import { isKnightMoveValid } from "./knight";
+import { isBishopMoveValid } from "./bishop";
+import { isRookMoveValid } from "./rook";
+import { isKingMoveValid } from "./king";
 
-export const getPieceId = (
-  position: IPosition,
-  byId: IPiecesById
-): string | null => {
-  const { col, row } = position;
-  for (let id in byId) {
-    if (byId[id].col === col && byId[id].row === row) {
-      return id;
+export const isFieldAttacked = (
+  piecesById: IPiecesById,
+  pos: IPosition,
+  byWhite: boolean
+): boolean => {
+  const pieceOnFieldID = getPieceId(pos, piecesById);
+  const pieceOnField: IPieceData | null = pieceOnFieldID
+    ? piecesById[pieceOnFieldID]
+    : null;
+
+  const attackingPieces: IPiecesById = getPiecesWithColor(piecesById, byWhite);
+  for (let id in attackingPieces) {
+    const moveData: IMove = { id, position: pos };
+    const pieceData: IPieceData = attackingPieces[id];
+
+    if (
+      !tryingToMakeForbiddenMove(moveData, pieceData, pieceOnField, piecesById)
+    ) {
+      return true;
     }
   }
-  return null;
+  return false;
 };
 
 export const isMoveValid = (
@@ -30,6 +45,7 @@ export const isMoveValid = (
 
   if (tryingToMoveOutsideBoard({ col, row })) return false;
   if (tryingToMoveOnOwnPiece(movedPiece, targetPiece)) return false;
+  if (tryingToMoveToTheSamePlace(moveData, movedPiece)) return false;
   if (tryingToMakeForbiddenMove(moveData, movedPiece, targetPiece, piecesById))
     return false;
   if (willBeCheckedAfterMove()) return false;
@@ -38,6 +54,16 @@ export const isMoveValid = (
 
 const tryingToMoveOutsideBoard = ({ col, row }: IPosition): boolean => {
   return col < 0 || col > 7 || row < 0 || row > 7;
+};
+
+const tryingToMoveToTheSamePlace = (
+  moveData: IMove,
+  movedPiece: IPieceData
+): boolean => {
+  return (
+    moveData.position.row === movedPiece.row &&
+    moveData.position.col === movedPiece.col
+  );
 };
 
 const tryingToMoveOnOwnPiece = (
@@ -58,18 +84,43 @@ const tryingToMakeForbiddenMove = (
     case PieceType.Pawn:
       return !isPawnMoveValid(moveData, movedPiece, targetPiece, piecesById);
     case PieceType.Knight:
-      return false;
+      return !isKnightMoveValid(moveData, movedPiece);
     case PieceType.Bishop:
-      return false;
+      return !isBishopMoveValid(moveData, movedPiece, piecesById);
     case PieceType.Rook:
-      return false;
+      return !isRookMoveValid(moveData, movedPiece, piecesById);
     case PieceType.Queen:
-      return false;
+      return (
+        !isBishopMoveValid(moveData, movedPiece, piecesById) &&
+        !isRookMoveValid(moveData, movedPiece, piecesById)
+      );
     case PieceType.King:
-      return false;
+      return !isKingMoveValid(moveData, movedPiece);
     default:
-      return true;
+      throw Error("Wrong piece type");
   }
 };
 
 const willBeCheckedAfterMove = (): boolean => false;
+
+export const getPieceId = (
+  position: IPosition,
+  byId: IPiecesById
+): string | null => {
+  const { col, row } = position;
+  for (let id in byId) {
+    if (byId[id].col === col && byId[id].row === row) {
+      return id;
+    }
+  }
+  return null;
+};
+
+const getPiecesWithColor = (byId: IPiecesById, white: boolean): IPiecesById => {
+  const piecesWithColor: IPiecesById = {};
+  for (let id in byId) {
+    if (byId[id].isWhite === white) piecesWithColor[id] = { ...byId[id] };
+  }
+
+  return piecesWithColor;
+};
