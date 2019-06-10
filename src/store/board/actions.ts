@@ -8,6 +8,7 @@ import {
   IPosition
 } from "./types";
 import { isMoveValid, getPieceId, isFieldAttacked } from "../../utils/move";
+import { isCheckMate } from "../../utils/move/results";
 import {
   getCaptureInPassData,
   unableCaptureForColor
@@ -39,7 +40,8 @@ export const resetBoard = () => {
 
 export const move = (moveData: IMove) => {
   const { id, position } = moveData;
-  const { byId, allIds } = store.getState().board.pieces;
+  const { pieces, isWhiteMove } = store.getState().board;
+  const { byId, allIds } = pieces;
   let newById: IPiecesById = deepCopy<IPiecesById>(byId);
   let newAllIds: Array<string> = [...allIds];
 
@@ -48,7 +50,12 @@ export const move = (moveData: IMove) => {
   const targetPiece: IPieceData | null = targetId ? newById[targetId] : null;
   const { type, row, isWhite } = movedPiece;
 
+  if (isWhiteMove !== isWhite) {
+    return action(BoardActionTypes.MOVE_FAILED);
+  }
+
   const ownKing: IPieceData = newById[isWhite ? "4" : "20"];
+  const enemyKing: IPieceData = newById[isWhite ? "20" : "4"];
   //CASTLING
   if (type === PieceType.King && !targetPiece) {
     const { isValid, kingPos, rookPos, rookId } = castling(
@@ -119,8 +126,14 @@ export const move = (moveData: IMove) => {
   if (shouldRemoveAnyPiece) newById = filterByIdObj(newById, newAllIds);
 
   const ownKingPos: IPosition = { row: ownKing.row, col: ownKing.col };
+  const enemyKingPos: IPosition = { row: enemyKing.row, col: enemyKing.col };
   if (isFieldAttacked(newById, ownKingPos, !isWhite)) {
     return action(BoardActionTypes.MOVE_FAILED);
+  }
+  if (isFieldAttacked(newById, enemyKingPos, isWhite)) {
+    if (isCheckMate(newById, enemyKingPos, isWhite)) {
+      return action(BoardActionTypes.CHECK_MATE, isWhite);
+    }
   }
 
   const payload = {

@@ -4,6 +4,8 @@ import { DeepReadonly } from "utility-types";
 export type BoardState = DeepReadonly<{
   pieces: IPieces;
   size: number;
+  isGameOver: boolean;
+  isWhiteMove: boolean;
 }>;
 
 export interface IPiecesById {
@@ -39,5 +41,6 @@ export enum BoardActionTypes {
   RESET = "@@board/BOARD",
   MOVE = "@@board/MOVE",
   MOVE_FAILED = "@@board/MOVE_FAILED",
+  CHECK_MATE = "@@board/CHECK_MATE",
   SET_SIZE = "@@board/SET_SIZE"
 }

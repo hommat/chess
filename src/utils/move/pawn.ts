@@ -1,5 +1,6 @@
 import { getPieceId } from "./index";
 import { PieceType } from "../piece";
+
 import {
   IMove,
   IPieceData,
@@ -97,9 +98,15 @@ const movedTwoRowsProper = (
     if (getPieceId({ row: row + 1, col }, piecesById)) {
       return false;
     }
+    if (getPieceId({ row: row + 2, col }, piecesById)) {
+      return false;
+    }
   } else {
     if (row !== 6) return false;
     if (getPieceId({ row: row - 1, col }, piecesById)) {
+      return false;
+    }
+    if (getPieceId({ row: row - 2, col }, piecesById)) {
       return false;
     }
   }

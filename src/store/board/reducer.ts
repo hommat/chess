@@ -6,13 +6,19 @@ const initState: BoardState = {
     byId: {},
     allIds: []
   },
-  size: 0
+  size: 0,
+  isGameOver: false,
+  isWhiteMove: true
 };
 
 const reducer: Reducer<BoardState> = (state = initState, action) => {
   switch (action.type) {
+    case BoardActionTypes.SET_SIZE:
+      return {
+        ...state,
+        size: action.payload
+      };
     case BoardActionTypes.RESET:
-    case BoardActionTypes.MOVE:
       return {
         ...state,
         pieces: {
@@ -20,10 +26,20 @@ const reducer: Reducer<BoardState> = (state = initState, action) => {
           allIds: [...action.payload.allIds]
         }
       };
-    case BoardActionTypes.SET_SIZE:
+    case BoardActionTypes.MOVE:
       return {
         ...state,
-        size: action.payload
+        isWhiteMove: !state.isWhiteMove,
+        pieces: {
+          byId: { ...action.payload.byId },
+          allIds: [...action.payload.allIds]
+        }
+      };
+    case BoardActionTypes.CHECK_MATE:
+      console.log(`The winner is ${action.payload ? "white" : "black"}`);
+      return {
+        ...state,
+        isGameOver: true
       };
     case BoardActionTypes.MOVE_FAILED:
     default:

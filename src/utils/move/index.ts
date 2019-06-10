@@ -48,7 +48,6 @@ export const isMoveValid = (
   if (tryingToMoveToTheSamePlace(moveData, movedPiece)) return false;
   if (tryingToMakeForbiddenMove(moveData, movedPiece, targetPiece, piecesById))
     return false;
-  if (willBeCheckedAfterMove()) return false;
   return true;
 };
 
@@ -74,7 +73,7 @@ const tryingToMoveOnOwnPiece = (
   return movedPiece.isWhite === targetPiece.isWhite;
 };
 
-const tryingToMakeForbiddenMove = (
+export const tryingToMakeForbiddenMove = (
   moveData: IMove,
   movedPiece: IPieceData,
   targetPiece: IPieceData | null,
@@ -101,8 +100,6 @@ const tryingToMakeForbiddenMove = (
   }
 };
 
-const willBeCheckedAfterMove = (): boolean => false;
-
 export const getPieceId = (
   position: IPosition,
   byId: IPiecesById
@@ -116,7 +113,10 @@ export const getPieceId = (
   return null;
 };
 
-const getPiecesWithColor = (byId: IPiecesById, white: boolean): IPiecesById => {
+export const getPiecesWithColor = (
+  byId: IPiecesById,
+  white: boolean
+): IPiecesById => {
   const piecesWithColor: IPiecesById = {};
   for (let id in byId) {
     if (byId[id].isWhite === white) piecesWithColor[id] = { ...byId[id] };

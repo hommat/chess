@@ -15,6 +15,21 @@ interface ICorner {
   left: boolean;
 }
 
+const Border: React.FC = (): JSX.Element => {
+  return (
+    <Container>
+      {getArrBorderElements(BottomElement, true)}
+      {getArrBorderElements(TopElement, true)}
+      {getArrBorderElements(LeftElement, false)}
+      {getArrBorderElements(RightElement, false)}
+      <Corner top={true} left={true} />
+      <Corner top={true} left={false} />
+      <Corner top={false} left={false} />
+      <Corner top={false} left={true} />
+    </Container>
+  );
+};
+
 const Container = styled.div`
   user-select: none;
   color: white;
@@ -63,20 +78,5 @@ const Corner = styled(Element)<ICorner>`
   top: ${({ top }) => (top ? -5 : 100)}%;
   left: ${({ left }) => (left ? -5 : 100)}%;
 `;
-
-const Border: React.FC = (): JSX.Element => {
-  return (
-    <Container>
-      {getArrBorderElements(BottomElement, true)}
-      {getArrBorderElements(TopElement, true)}
-      {getArrBorderElements(LeftElement, false)}
-      {getArrBorderElements(RightElement, false)}
-      <Corner top={true} left={true} />
-      <Corner top={true} left={false} />
-      <Corner top={false} left={false} />
-      <Corner top={false} left={true} />
-    </Container>
-  );
-};
 
 export default Border;
