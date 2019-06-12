@@ -61,7 +61,8 @@ export const getInitPieceArray = (): IPiecesById => {
       type: PieceType.Bishop,
       col: 2,
       row: baseRow,
-      isWhite: isWhite
+      isWhite: isWhite,
+      walkingOnWhite: i === 1
     };
     piecesById[(baseId + 3).toString()] = {
       type: PieceType.Queen,
@@ -81,7 +82,8 @@ export const getInitPieceArray = (): IPiecesById => {
       type: PieceType.Bishop,
       col: 5,
       row: baseRow,
-      isWhite: isWhite
+      isWhite: isWhite,
+      walkingOnWhite: i === 0
     };
     piecesById[(baseId + 6).toString()] = {
       type: PieceType.Knight,

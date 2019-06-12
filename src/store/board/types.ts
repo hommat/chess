@@ -20,6 +20,7 @@ export interface IPieceData {
   everMoved?: boolean;
   canBeCaptured?: boolean;
   castled?: boolean;
+  walkingOnWhite?: boolean;
 }
 
 interface IPieces {
