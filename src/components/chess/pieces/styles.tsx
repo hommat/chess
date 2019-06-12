@@ -7,7 +7,7 @@ interface IPieceStyle {
   isWhite: boolean;
 }
 
-export const Piece = styled.div<IPieceStyle>`
+export const StyledPiece = styled.div<IPieceStyle>`
   position: absolute;
   width: 12.5%;
   user-select: none;

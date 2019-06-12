@@ -36,9 +36,24 @@ const reducer: Reducer<BoardState> = (state = initState, action) => {
         }
       };
     case BoardActionTypes.CHECK_MATE:
-      console.log(`The winner is ${action.payload ? "white" : "black"}`);
+      const { isWhite, ...rest } = action.payload;
+      console.log(`The winner is ${isWhite ? "white" : "black"}`);
       return {
         ...state,
+        pieces: {
+          ...state.pieces,
+          ...rest
+        },
+        isGameOver: true
+      };
+    case BoardActionTypes.DRAW:
+      console.log("DRAW");
+      return {
+        ...state,
+        pieces: {
+          ...state.pieces,
+          ...action.payload
+        },
         isGameOver: true
       };
     case BoardActionTypes.MOVE_FAILED:

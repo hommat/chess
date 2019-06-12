@@ -1,5 +1,12 @@
-import { IMove, IPieceData, IPiecesById } from "../../store/board/types";
-import { getPieceId } from "./index";
+import {
+  IMove,
+  IPieceData,
+  IPiecesById,
+  IPosition
+} from "../../store/board/types";
+import { getPieceId, tryingToMoveOutsideBoard, isFieldAttacked } from "./index";
+import { deepCopy } from "../objects";
+import { IBlock } from "./draw";
 
 export const isBishopMoveValid = (
   moveData: IMove,
@@ -26,4 +33,39 @@ export const isBishopMoveValid = (
   }
 
   return true;
+};
+
+export const isBishopBlocked = (data: IBlock): boolean => {
+  const { ownKing, byId, piece } = data;
+  const { col, row, isWhite } = piece;
+  const kingPos: IPosition = { col: ownKing.col, row: ownKing.row };
+  for (let c: number = -1; c <= 1; c += 2) {
+    for (let r: number = -1; r <= 1; r += 2) {
+      const targetPos: IPosition = { col: col + c, row: row + r };
+      if (!tryingToMoveOutsideBoard(targetPos)) {
+        const idOnTargetPos: string | null = getPieceId(targetPos, byId);
+        if (idOnTargetPos) {
+          if (byId[idOnTargetPos].isWhite !== isWhite) {
+            if (!isKingGonnaBeCheck(data, targetPos, kingPos)) return false;
+          }
+        } else if (!isKingGonnaBeCheck(data, targetPos, kingPos)) return false;
+      }
+    }
+  }
+  return true;
+};
+
+export const isKingGonnaBeCheck = (
+  data: IBlock,
+  targetPos: IPosition,
+  kingPos: IPosition
+): boolean => {
+  const { byId, id, piece } = data;
+  const { isWhite } = piece;
+  const byIdCopy: IPiecesById = deepCopy(byId);
+
+  byIdCopy[id].col = targetPos.col;
+  byIdCopy[id].row = targetPos.row;
+
+  return isFieldAttacked(byIdCopy, kingPos, !isWhite);
 };

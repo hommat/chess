@@ -8,7 +8,8 @@ import {
   IPosition
 } from "./types";
 import { isMoveValid, getPieceId, isFieldAttacked } from "../../utils/move";
-import { isCheckMate } from "../../utils/move/results";
+import { isCheckMate } from "../../utils/move/checkmate";
+import { isDraw } from "../../utils/move/draw";
 import {
   getCaptureInPassData,
   unableCaptureForColor
@@ -39,8 +40,9 @@ export const resetBoard = () => {
 };
 
 export const move = (moveData: IMove) => {
+  console.log("--------------");
   const { id, position } = moveData;
-  const { pieces, isWhiteMove } = store.getState().board;
+  const { pieces, isWhiteMove, isGameOver } = store.getState().board;
   const { byId, allIds } = pieces;
   let newById: IPiecesById = deepCopy<IPiecesById>(byId);
   let newAllIds: Array<string> = [...allIds];
@@ -50,7 +52,7 @@ export const move = (moveData: IMove) => {
   const targetPiece: IPieceData | null = targetId ? newById[targetId] : null;
   const { type, row, isWhite } = movedPiece;
 
-  if (isWhiteMove !== isWhite) {
+  if (isGameOver || isWhiteMove !== isWhite) {
     return action(BoardActionTypes.MOVE_FAILED);
   }
 
@@ -79,6 +81,26 @@ export const move = (moveData: IMove) => {
         byId: newById,
         allIds: newAllIds
       };
+
+      const enemyKingPos: IPosition = {
+        row: enemyKing.row,
+        col: enemyKing.col
+      };
+      const isEnemyKingChecked = isFieldAttacked(
+        newById,
+        enemyKingPos,
+        isWhite
+      );
+      if (isEnemyKingChecked) {
+        if (isCheckMate(newById, enemyKingPos, isWhite)) {
+          return action(BoardActionTypes.CHECK_MATE, { ...payload, isWhite });
+        }
+      }
+
+      if (isDraw(newById, isEnemyKingChecked, isWhiteMove)) {
+        return action(BoardActionTypes.DRAW, payload);
+      }
+
       unableCaptureForColor(!movedPiece.isWhite, newById);
       return action(BoardActionTypes.MOVE, payload);
     }
@@ -103,6 +125,26 @@ export const move = (moveData: IMove) => {
         byId: newById,
         allIds: newAllIds
       };
+
+      const enemyKingPos: IPosition = {
+        row: enemyKing.row,
+        col: enemyKing.col
+      };
+      const isEnemyKingChecked = isFieldAttacked(
+        newById,
+        enemyKingPos,
+        isWhite
+      );
+      if (isEnemyKingChecked) {
+        if (isCheckMate(newById, enemyKingPos, isWhite)) {
+          return action(BoardActionTypes.CHECK_MATE, { ...payload, isWhite });
+        }
+      }
+
+      if (isDraw(newById, isEnemyKingChecked, isWhiteMove)) {
+        return action(BoardActionTypes.DRAW, payload);
+      }
+
       unableCaptureForColor(!movedPiece.isWhite, newById);
       return action(BoardActionTypes.MOVE, payload);
     }
@@ -130,16 +172,23 @@ export const move = (moveData: IMove) => {
   if (isFieldAttacked(newById, ownKingPos, !isWhite)) {
     return action(BoardActionTypes.MOVE_FAILED);
   }
-  if (isFieldAttacked(newById, enemyKingPos, isWhite)) {
-    if (isCheckMate(newById, enemyKingPos, isWhite)) {
-      return action(BoardActionTypes.CHECK_MATE, isWhite);
-    }
-  }
 
   const payload = {
     byId: newById,
     allIds: newAllIds
   };
+
+  const isEnemyKingChecked = isFieldAttacked(newById, enemyKingPos, isWhite);
+
+  if (isEnemyKingChecked) {
+    if (isCheckMate(newById, enemyKingPos, isWhite)) {
+      return action(BoardActionTypes.CHECK_MATE, { ...payload, isWhite });
+    }
+  }
+
+  if (isDraw(newById, isEnemyKingChecked, isWhiteMove)) {
+    return action(BoardActionTypes.DRAW, payload);
+  }
 
   unableCaptureForColor(!movedPiece.isWhite, newById);
   return action(BoardActionTypes.MOVE, payload);

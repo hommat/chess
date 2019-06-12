@@ -51,7 +51,7 @@ export const isMoveValid = (
   return true;
 };
 
-const tryingToMoveOutsideBoard = ({ col, row }: IPosition): boolean => {
+export const tryingToMoveOutsideBoard = ({ col, row }: IPosition): boolean => {
   return col < 0 || col > 7 || row < 0 || row > 7;
 };
 

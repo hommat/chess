@@ -4,7 +4,9 @@ import {
   IPiecesById,
   IPosition
 } from "../../store/board/types";
-import { getPieceId, isFieldAttacked } from "./index";
+import { getPieceId, isFieldAttacked, tryingToMoveOutsideBoard } from "./index";
+import { IBlock } from "./draw";
+import { deepCopy } from "../objects";
 
 interface ICastlingOutput {
   isValid: boolean;
@@ -72,4 +74,46 @@ export const castling = (
   output.isValid = true;
 
   return output;
+};
+
+export const isKingBlocked = (data: IBlock): boolean => {
+  const { byId, piece } = data;
+  const { col, row, isWhite } = piece;
+
+  for (let c: number = -1; c <= 1; c++) {
+    for (let r: number = -1; r <= 1; r++) {
+      if (r === 0 && c === 0) continue;
+
+      const targetPos: IPosition = { col: col + c, row: row + r };
+      if (!tryingToMoveOutsideBoard(targetPos)) {
+        const idOnTargetPos: string | null = getPieceId(targetPos, byId);
+        if (idOnTargetPos) {
+          if (byId[idOnTargetPos].isWhite !== isWhite) {
+            if (!isKingGonnaBeCheck(data, targetPos)) {
+              console.log("can move ", targetPos);
+              return false;
+            }
+          }
+        } else if (!isKingGonnaBeCheck(data, targetPos)) {
+          console.log("can move ", targetPos);
+          return false;
+        }
+      }
+    }
+  }
+  return true;
+};
+
+export const isKingGonnaBeCheck = (
+  data: IBlock,
+  targetPos: IPosition
+): boolean => {
+  const { byId, id, piece } = data;
+  const { isWhite } = piece;
+  const byIdCopy: IPiecesById = deepCopy(byId);
+
+  byIdCopy[id].col = targetPos.col;
+  byIdCopy[id].row = targetPos.row;
+
+  return isFieldAttacked(byIdCopy, byIdCopy[id], !isWhite);
 };

@@ -42,5 +42,6 @@ export enum BoardActionTypes {
   MOVE = "@@board/MOVE",
   MOVE_FAILED = "@@board/MOVE_FAILED",
   CHECK_MATE = "@@board/CHECK_MATE",
+  DRAW = "@@board/DRAW",
   SET_SIZE = "@@board/SET_SIZE"
 }

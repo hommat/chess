@@ -1,12 +1,13 @@
-import { getPieceId } from "./index";
+import { getPieceId, isFieldAttacked } from "./index";
 import { PieceType } from "../piece";
-
+import { IBlock } from "./draw";
 import {
   IMove,
   IPieceData,
   IPiecesById,
   IPosition
 } from "../../store/board/types";
+import { deepCopy } from "../objects";
 
 export const getCaptureInPassData = (
   movedPiece: IPieceData,
@@ -65,6 +66,7 @@ export const isPawnMoveValid = (
   if (Math.abs(rowDistance) === 2) {
     if (!movedTwoRowsProper(movedPiece, piecesById)) return false;
   }
+  if (Math.abs(colDistance) === 0 && targetPiece) return false;
   return true;
 };
 
@@ -75,8 +77,6 @@ const movedColumnProper = (
   const { row, col } = distance;
   if (Math.abs(col) > 1) return false;
   if (Math.abs(col) === 1 && Math.abs(row) !== 1) return false;
-  if (!targetPiece && Math.abs(col) === 1) {
-  }
   if (!targetPiece && col !== 0) return false;
 
   return true;
@@ -111,4 +111,76 @@ const movedTwoRowsProper = (
     }
   }
   return true;
+};
+
+export const isPawnBlocked = (data: IBlock): boolean => {
+  return !canGoForward(data) && !canCapturePiece(data);
+};
+
+const canGoForward = (data: IBlock): boolean => {
+  const { byId, piece, ownKing, id } = data;
+  const { col, row, isWhite } = piece;
+
+  const targetRow = row + (isWhite ? 1 : -1);
+  const forwardPiecePos: IPosition = { col, row: targetRow };
+  const forwardPieceId: string | null = getPieceId(forwardPiecePos, byId);
+  if (!forwardPieceId) {
+    const byIdCopy: IPiecesById = deepCopy(byId);
+    byIdCopy[id].row = targetRow;
+    const ownKingPos: IPosition = { col: ownKing.col, row: ownKing.row };
+    if (!isFieldAttacked(byIdCopy, ownKingPos, !isWhite)) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+const canCapturePiece = (data: IBlock): boolean => {
+  const { byId, piece, ownKing, id } = data;
+  const { col, row, isWhite } = piece;
+
+  const targetRow = row + (isWhite ? 1 : -1);
+  const targetCols: Array<number> = [col - 1, col + 1];
+  const ownKingPos: IPosition = { col: ownKing.col, row: ownKing.row };
+
+  for (let i = 0; i < targetCols.length; i++) {
+    const pieceToCapturePos: IPosition = { col: targetCols[i], row: targetRow };
+    const pieceToCaptureId: string | null = getPieceId(pieceToCapturePos, byId);
+    if (pieceToCaptureId) {
+      if (byId[pieceToCaptureId].isWhite !== isWhite) {
+        const byIdCopy: IPiecesById = deepCopy(byId);
+
+        delete byIdCopy[pieceToCaptureId];
+        byIdCopy[id].row = targetRow;
+        byIdCopy[id].col = targetCols[i];
+
+        if (!isFieldAttacked(byIdCopy, ownKingPos, !isWhite)) {
+          return true;
+        }
+      }
+    }
+  }
+
+  //Capture in pass
+  for (let i = 0; i < targetCols.length; i++) {
+    const pieceToCapturePos: IPosition = { col: targetCols[i], row };
+    const pieceToCaptureId: string | null = getPieceId(pieceToCapturePos, byId);
+    if (pieceToCaptureId) {
+      const pieceToCapture: IPieceData = byId[pieceToCaptureId];
+      if (pieceToCapture.canBeCaptured && pieceToCapture.isWhite !== isWhite) {
+        const byIdCopy: IPiecesById = deepCopy(byId);
+
+        delete byIdCopy[pieceToCaptureId];
+        byIdCopy[id].row = row + (isWhite ? 1 : -1);
+        byIdCopy[id].col = targetCols[i];
+
+        if (!isFieldAttacked(byIdCopy, ownKingPos, !isWhite)) {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
 };

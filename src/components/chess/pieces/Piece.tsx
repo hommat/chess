@@ -5,7 +5,7 @@ import { IApplicationState } from "../../../store";
 import { IPieceData, IMove } from "../../../store/board/types";
 import { move } from "../../../store/board/actions";
 import { areObjEqual } from "../../../utils/objects";
-import { Piece } from "./styles";
+import { StyledPiece } from "./styles";
 
 interface IStateProps {
   data: IPieceData;
@@ -28,7 +28,7 @@ interface IState {
 
 type Props = IStateProps & IDispatch & IOwnProps;
 
-class Bishop extends Component<Props, IState> {
+class Piece extends Component<Props, IState> {
   readonly state: IState = {
     mousePressing: false,
     mouseX: -1,
@@ -88,7 +88,7 @@ class Bishop extends Component<Props, IState> {
   };
   render() {
     return (
-      <Piece
+      <StyledPiece
         {...this.props.data}
         onMouseDown={this.handleMouseDown}
         onMouseUp={this.handleMouseUp}
@@ -117,4 +117,4 @@ const mapDispatchToProps = (dispatch: Dispatch): IDispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Bishop);
+)(Piece);
