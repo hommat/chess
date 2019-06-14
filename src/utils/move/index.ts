@@ -23,7 +23,7 @@ export const isFieldAttacked = (
 
   const attackingPieces: IPiecesById = getPiecesWithColor(piecesById, byWhite);
   for (let id in attackingPieces) {
-    const moveData: IMove = { id, position: pos };
+    const moveData: IMove = { id, targetPosition: pos };
     const pieceData: IPieceData = attackingPieces[id];
 
     if (
@@ -41,7 +41,7 @@ export const isMoveValid = (
   targetPiece: IPieceData | null,
   piecesById: IPiecesById
 ): boolean => {
-  const { col, row } = moveData.position;
+  const { col, row } = moveData.targetPosition;
 
   if (tryingToMoveOutsideBoard({ col, row })) return false;
   if (tryingToMoveOnOwnPiece(movedPiece, targetPiece)) return false;
@@ -60,8 +60,8 @@ const tryingToMoveToTheSamePlace = (
   movedPiece: IPieceData
 ): boolean => {
   return (
-    moveData.position.row === movedPiece.row &&
-    moveData.position.col === movedPiece.col
+    moveData.targetPosition.row === movedPiece.row &&
+    moveData.targetPosition.col === movedPiece.col
   );
 };
 

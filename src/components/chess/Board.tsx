@@ -2,24 +2,27 @@ import React, { Component } from "react";
 import { Dispatch } from "redux";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { resetBoard, setSize } from "../../store/board/actions";
+import { initSetup, setSize } from "../../store/board/actions";
 import { IApplicationState } from "../../store";
 import Border from "./Border";
 import Fields from "./Fields";
 import Pieces from "./pieces/Pieces";
+import PieceSelector from "./pieces/Selector";
 
 interface IStateProps {
   size: number;
+  isGameOver: boolean;
+  pawnIdToChange: string;
 }
 
 interface IDispatchProps {
-  resetBoard: () => void;
+  initSetup: () => void;
   setSize: (size: number) => void;
 }
 
 type Props = IDispatchProps & IStateProps;
 
-const Container = styled.div<IStateProps>`
+const Container = styled.div<{ size: number }>`
   position: relative;
   width: ${({ size }) => size}px;
   height: ${({ size }) => size}px;
@@ -28,7 +31,7 @@ const Container = styled.div<IStateProps>`
 class Board extends Component<Props, {}> {
   componentDidMount() {
     window.addEventListener("resize", this.setBorderSize);
-    this.props.resetBoard();
+    this.props.initSetup();
     this.setBorderSize();
   }
   componentWillUnmount() {
@@ -45,24 +48,28 @@ class Board extends Component<Props, {}> {
     }
   };
   render() {
+    const { size, pawnIdToChange, isGameOver } = this.props;
     return (
-      <Container size={this.props.size}>
+      <Container size={size}>
         <Border />
         <Fields />
         <Pieces />
+        {pawnIdToChange !== "-1" && !isGameOver ? <PieceSelector /> : null}
       </Container>
     );
   }
 }
 const mapStateToProps = (state: IApplicationState) => {
   return {
-    size: state.board.size
+    size: state.board.size,
+    isGameOver: state.board.isGameOver,
+    pawnIdToChange: state.board.pawnIdToChange
   };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch): IDispatchProps => {
   return {
-    resetBoard: () => dispatch(resetBoard()),
+    initSetup: () => dispatch(initSetup()),
     setSize: (size: number) => dispatch(setSize(size))
   };
 };

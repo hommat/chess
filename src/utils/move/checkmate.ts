@@ -41,7 +41,7 @@ const getPiecesAttackingField = (
 
   const attackingPieces: IPiecesById = getPiecesWithColor(piecesById, byWhite);
   for (let id in attackingPieces) {
-    const moveData: IMove = { id, position: pos };
+    const moveData: IMove = { id, targetPosition: pos };
     const pieceData: IPieceData = attackingPieces[id];
 
     if (canMove(moveData, pieceData, pieceOnField, piecesById)) {
@@ -120,8 +120,8 @@ const canAnyoneCover = (
 
             if (canMove(moveData, defendingPiece, null, piecesById)) {
               const byIdCopy: IPiecesById = deepCopy(piecesById);
-              byIdCopy[defendId].col = moveData.position.col;
-              byIdCopy[defendId].row = moveData.position.row;
+              byIdCopy[defendId].col = moveData.targetPosition.col;
+              byIdCopy[defendId].row = moveData.targetPosition.row;
               if (!isFieldAttacked(byIdCopy, kingPos, byWhite)) {
                 console.log("tym moze sie zaslonic");
                 console.log(defendingPiece);
@@ -201,7 +201,7 @@ const getStraightCoverMoveData = (
 ): IMove => {
   const moveData: IMove = {
     id: id,
-    position: {
+    targetPosition: {
       col: isHorizontal ? i : attackingPiece.col,
       row: isHorizontal ? attackingPiece.row : i
     }
@@ -218,7 +218,7 @@ const getDiagonalCoverMoveData = (
 ): IMove => {
   const moveData: IMove = {
     id: id,
-    position: {
+    targetPosition: {
       col: attackingPiece.col + amount * (addCols ? 1 : -1),
       row: attackingPiece.row + amount * (addRows ? 1 : -1)
     }
@@ -238,7 +238,7 @@ const canAnyoneDestoroyAttackingPiece = (
     const targetPos = { col: pieceToDestroy.col, row: pieceToDestroy.row };
 
     for (let defendId in piecesToDefend) {
-      const moveData: IMove = { id: defendId, position: targetPos };
+      const moveData: IMove = { id: defendId, targetPosition: targetPos };
       const defendingPiece: IPieceData = piecesById[defendId];
 
       if (canMove(moveData, defendingPiece, pieceToDestroy, piecesById)) {

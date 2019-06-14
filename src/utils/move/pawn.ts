@@ -19,8 +19,8 @@ export const getCaptureInPassData = (
   const ownRequiredRow = isWhite ? 4 : 3;
   if (row !== ownRequiredRow) return null;
 
-  const rowDistance = moveData.position.row - row;
-  const colDistance = moveData.position.col - col;
+  const rowDistance = moveData.targetPosition.row - row;
+  const colDistance = moveData.targetPosition.col - col;
   if (Math.abs(colDistance) !== 1 || Math.abs(rowDistance) !== 1) return null;
 
   const colToCheck = col + colDistance;
@@ -55,8 +55,8 @@ export const isPawnMoveValid = (
   piecesById: IPiecesById
 ): boolean => {
   const { row, col, isWhite } = movedPiece;
-  const rowDistance = moveData.position.row - row;
-  const colDistance = moveData.position.col - col;
+  const rowDistance = moveData.targetPosition.row - row;
+  const colDistance = moveData.targetPosition.col - col;
   const distance = { row: rowDistance, col: colDistance };
 
   if (!movedColumnProper(distance, targetPiece)) return false;

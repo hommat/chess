@@ -67,7 +67,7 @@ class Piece extends Component<Props, IState> {
       const col = 7 - (7 - Math.floor(x / (size / 8)));
       const row = 7 - Math.floor(y / (size / 8));
 
-      move({ id, position: { col, row } });
+      move({ id, targetPosition: { col, row } });
       this.setState({ mousePressing: false, mouseX: -1, mouseY: -1 });
     }
   };

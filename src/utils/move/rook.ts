@@ -14,8 +14,8 @@ export const isRookMoveValid = (
   piecesById: IPiecesById
 ): boolean => {
   const { col, row } = movedPiece;
-  const colDistance = moveData.position.col - col;
-  const rowDistance = moveData.position.row - row;
+  const colDistance = moveData.targetPosition.col - col;
+  const rowDistance = moveData.targetPosition.row - row;
   if (Math.abs(colDistance) !== 0 && Math.abs(rowDistance) !== 0) return false;
 
   const goingHorizontal = colDistance !== 0;

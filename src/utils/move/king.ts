@@ -20,8 +20,8 @@ export const isKingMoveValid = (
   movedPiece: IPieceData
 ): boolean => {
   const { col, row } = movedPiece;
-  const colDistance = moveData.position.col - col;
-  const rowDistance = moveData.position.row - row;
+  const colDistance = moveData.targetPosition.col - col;
+  const rowDistance = moveData.targetPosition.row - row;
   if (Math.abs(colDistance) > 1 || Math.abs(rowDistance) > 1) return false;
 
   return true;
@@ -41,8 +41,8 @@ export const castling = (
   const { col, row, everMoved, isWhite, castled } = king;
   if (everMoved || castled) return output;
 
-  const colDistance = moveData.position.col - col;
-  const rowDistance = moveData.position.row - row;
+  const colDistance = moveData.targetPosition.col - col;
+  const rowDistance = moveData.targetPosition.row - row;
   if (rowDistance !== 0 || Math.abs(colDistance) !== 2) return output;
 
   const rookRow = isWhite ? 0 : 7;

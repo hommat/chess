@@ -14,8 +14,8 @@ export const isBishopMoveValid = (
   piecesById: IPiecesById
 ): boolean => {
   const { col, row } = movedPiece;
-  const colDistance = moveData.position.col - col;
-  const rowDistance = moveData.position.row - row;
+  const colDistance = moveData.targetPosition.col - col;
+  const rowDistance = moveData.targetPosition.row - row;
   if (Math.abs(colDistance) !== Math.abs(rowDistance)) return false;
 
   const goingRight = colDistance > 0;

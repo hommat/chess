@@ -3,6 +3,12 @@ import { DeepReadonly } from "utility-types";
 
 export type BoardState = DeepReadonly<{
   pieces: IPieces;
+  positions: {
+    allPositions: Array<string>;
+    allOccurTimes: Array<number>;
+  };
+  movesTo50Rule: number;
+  pawnIdToChange: string;
   size: number;
   isGameOver: boolean;
   isWhiteMove: boolean;
@@ -30,7 +36,7 @@ interface IPieces {
 
 export interface IMove {
   id: string;
-  position: IPosition;
+  targetPosition: IPosition;
 }
 
 export interface IPosition {
@@ -39,10 +45,33 @@ export interface IPosition {
 }
 
 export enum BoardActionTypes {
-  RESET = "@@board/BOARD",
+  INIT_SETUP = "@@board/INIT_SETUP",
+  START = "@@board/START",
   MOVE = "@@board/MOVE",
   MOVE_FAILED = "@@board/MOVE_FAILED",
+  CHANGE_PAWN = "@@board/CHANGE_PAWN",
+  CHANGE_PAWN_FAILED = "@@board/CHANGE_PAWN_FAILED",
   CHECK_MATE = "@@board/CHECK_MATE",
   DRAW = "@@board/DRAW",
   SET_SIZE = "@@board/SET_SIZE"
+}
+
+export interface IMovePayload {
+  byId: IPiecesById;
+  allIds: Array<string>;
+  allPositions: Array<string>;
+  allOccurTimes: Array<number>;
+  movesTo50Rule: number;
+  pawnIdToChange: string;
+}
+
+export interface ICheckMatePayload {
+  byId: IPiecesById;
+  allIds: Array<string>;
+  isWhite: boolean;
+}
+
+export interface IDrawPayload {
+  byId: IPiecesById;
+  allIds: Array<string>;
 }

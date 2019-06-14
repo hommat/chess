@@ -17,11 +17,16 @@ export interface IBlock {
 export const isDraw = (
   byId: IPiecesById,
   isKingChecked: boolean,
-  isWhiteMove: boolean
+  isWhiteMove: boolean,
+  anyPieceDestroyed: boolean,
+  allPositionsOcuurTimes: Array<number>,
+  movesTo50Rule: number
 ): boolean => {
   return (
     isStaleMate(byId, isKingChecked, isWhiteMove) ||
-    !hasEnoughtMaterialToWin(byId)
+    !hasEnoughtMaterialToWin(byId, anyPieceDestroyed) ||
+    anyPositionOcuuredThreeTimes(allPositionsOcuurTimes) ||
+    f50MovesWithoutRemovePieceOrPawnMove(movesTo50Rule)
   );
 };
 
@@ -65,7 +70,12 @@ const isPieceBlocked = (blockData: IBlock): boolean => {
   }
 };
 
-const hasEnoughtMaterialToWin = (byId: IPiecesById): boolean => {
+const hasEnoughtMaterialToWin = (
+  byId: IPiecesById,
+  anyPieceDestroyed: boolean
+): boolean => {
+  if (!anyPieceDestroyed) return true;
+
   const pieces1 = [
     [PieceType.King],
     [PieceType.King, PieceType.Bishop],
@@ -133,3 +143,9 @@ const canPlayWithCombination = (
 
   return !(isWhiteOk && isBlackOk && !bishopsAreDifferent);
 };
+
+const anyPositionOcuuredThreeTimes = (
+  allPositionsOcuurTimes: Array<number>
+): boolean => allPositionsOcuurTimes.indexOf(3) !== -1;
+
+const f50MovesWithoutRemovePieceOrPawnMove = (moves: number) => moves === 50;

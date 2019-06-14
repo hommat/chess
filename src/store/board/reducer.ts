@@ -6,43 +6,86 @@ const initState: BoardState = {
     byId: {},
     allIds: []
   },
+  positions: {
+    allPositions: [],
+    allOccurTimes: []
+  },
+  pawnIdToChange: "-1",
+  movesTo50Rule: 0,
   size: 0,
-  isGameOver: false,
+  isGameOver: true,
   isWhiteMove: true
 };
 
 const reducer: Reducer<BoardState> = (state = initState, action) => {
+  console.log(action.type);
   switch (action.type) {
     case BoardActionTypes.SET_SIZE:
       return {
         ...state,
         size: action.payload
       };
-    case BoardActionTypes.RESET:
+    case BoardActionTypes.INIT_SETUP:
       return {
         ...state,
         pieces: {
           byId: { ...action.payload.byId },
           allIds: [...action.payload.allIds]
         }
+      };
+    case BoardActionTypes.START:
+      return {
+        ...state,
+        pieces: {
+          byId: { ...action.payload.byId },
+          allIds: [...action.payload.allIds]
+        },
+        positions: { ...initState.positions },
+        pawnIdToChange: "-1",
+        movesTo50Rule: 0,
+        isGameOver: false,
+        isWhiteMove: true
       };
     case BoardActionTypes.MOVE:
+      const isWhiteMove =
+        action.payload.pawnIdToChange === "-1"
+          ? !state.isWhiteMove
+          : state.isWhiteMove;
       return {
         ...state,
-        isWhiteMove: !state.isWhiteMove,
         pieces: {
           byId: { ...action.payload.byId },
           allIds: [...action.payload.allIds]
-        }
+        },
+        positions: {
+          allPositions: [...action.payload.allPositions],
+          allOccurTimes: [...action.payload.allOccurTimes]
+        },
+        movesTo50Rule: action.payload.movesTo50Rule,
+        pawnIdToChange: action.payload.pawnIdToChange,
+        isWhiteMove
       };
-    case BoardActionTypes.CHECK_MATE:
-      const { isWhite, ...rest } = action.payload;
-      console.log(`The winner is ${isWhite ? "white" : "black"}`);
+    case BoardActionTypes.CHANGE_PAWN:
       return {
         ...state,
         pieces: {
           ...state.pieces,
-          ...rest
+          byId: action.payload.byId
+        },
+        isWhiteMove: !state.isWhiteMove,
+        movesTo50Rule: 0,
+        pawnIdToChange: "-1"
+      };
+    case BoardActionTypes.CHECK_MATE:
+      console.log(
+        `The winner is ${action.payload.isWhite ? "white" : "black"}`
+      );
+      return {
+        ...state,
+        pieces: {
+          ...state.pieces,
+          byId: action.payload.byId,
+          allIds: action.payload.allIds
         },
         isGameOver: true
       };
@@ -52,11 +95,13 @@ const reducer: Reducer<BoardState> = (state = initState, action) => {
         ...state,
         pieces: {
           ...state.pieces,
-          ...action.payload
+          byId: action.payload.byId,
+          allIds: action.payload.allIds
         },
         isGameOver: true
       };
     case BoardActionTypes.MOVE_FAILED:
+    case BoardActionTypes.CHANGE_PAWN_FAILED:
     default:
       return state;
   }

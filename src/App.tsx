@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import Board from "./components/chess/Board";
+import StartButton from "./components/chess/StartButton";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -26,6 +27,7 @@ const App: React.FC = (): JSX.Element => {
       <GlobalStyle />
       <Container>
         <Board />
+        <StartButton />
       </Container>
     </Fragment>
   );
