@@ -47,6 +47,7 @@ export interface IPosition {
 export enum BoardActionTypes {
   INIT_SETUP = "@@board/INIT_SETUP",
   START = "@@board/START",
+  TIMEOUT = "@@board/TIMEOUT",
   MOVE = "@@board/MOVE",
   MOVE_FAILED = "@@board/MOVE_FAILED",
   CHANGE_PAWN = "@@board/CHANGE_PAWN",

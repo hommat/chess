@@ -18,7 +18,6 @@ const initState: BoardState = {
 };
 
 const reducer: Reducer<BoardState> = (state = initState, action) => {
-  console.log(action.type);
   switch (action.type) {
     case BoardActionTypes.SET_SIZE:
       return {
@@ -87,6 +86,12 @@ const reducer: Reducer<BoardState> = (state = initState, action) => {
           byId: action.payload.byId,
           allIds: action.payload.allIds
         },
+        isGameOver: true
+      };
+    case BoardActionTypes.TIMEOUT:
+      console.log(`The winner is ${action.payload ? "black" : "white"}`);
+      return {
+        ...state,
         isGameOver: true
       };
     case BoardActionTypes.DRAW:

@@ -37,6 +37,9 @@ export const startGame = () => {
   return action(BoardActionTypes.START, payload);
 };
 
+export const timeout = (isWhite: boolean) =>
+  action(BoardActionTypes.TIMEOUT, isWhite);
+
 const getInitSetupPayload = (): {
   byId: IPiecesById;
   allIds: Array<string>;

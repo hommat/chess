@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import Board from "./components/chess/Board";
 import StartButton from "./components/chess/StartButton";
+import Timer from "./components/chess/Timer";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -28,6 +29,8 @@ const App: React.FC = (): JSX.Element => {
       <Container>
         <Board />
         <StartButton />
+        <Timer isWhite={true} />
+        <Timer isWhite={false} />
       </Container>
     </Fragment>
   );
