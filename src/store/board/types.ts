@@ -11,6 +11,9 @@ export type BoardState = DeepReadonly<{
   pawnIdToChange: string;
   size: number;
   isGameOver: boolean;
+  isWinner: boolean;
+  isWinnerWhite: boolean;
+  isDraw: boolean;
   isWhiteMove: boolean;
 }>;
 

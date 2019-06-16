@@ -8,16 +8,17 @@ import { timeout } from "../../store/board/actions";
 import styled from "styled-components";
 
 const TimerContainer = styled.div<IOwnProps>`
-  background: grey;
+  background: ${props => (props.isWhite ? "#333333" : "#1a1a1a")};
+  border-radius: ${props =>
+    props.isWhite ? "0 0 15px 15px" : "15px 15px 0 0"};
   font-weight: bold;
   text-align: center;
-  padding-top: 5px;
+  padding: 10px;
   height: 40px;
-  width: 10%;
-  position: absolute;
   bottom: 0;
-  left: ${props => (props.isWhite ? 20 : 70)}%;
-  border: 5px solid ${props => (props.isWhite ? "white" : "black")};
+  display: flex;
+  align-items: center;
+  color: #e3e3e3;
 `;
 
 interface IStateProps {

@@ -39,9 +39,9 @@ class Board extends Component<Props, {}> {
   }
   setBorderSize = (): void => {
     const { innerWidth, innerHeight } = window;
-    const screenPercent = 80;
+    const screenPercent = 100;
     const newSize = Math.floor(
-      (Math.min(innerWidth, innerHeight) * screenPercent) / 100
+      (Math.min(innerWidth, innerHeight - 40 - 40) * screenPercent) / 100
     );
     if (this.props.size !== newSize) {
       this.props.setSize(newSize);
@@ -51,7 +51,7 @@ class Board extends Component<Props, {}> {
     const { size, pawnIdToChange, isGameOver } = this.props;
     return (
       <Container size={size}>
-        <Border />
+        {/* <Border /> */}
         <Fields />
         <Pieces />
         {pawnIdToChange !== "-1" && !isGameOver ? <PieceSelector /> : null}

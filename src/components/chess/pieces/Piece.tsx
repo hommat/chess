@@ -71,6 +71,38 @@ class Piece extends Component<Props, IState> {
       this.setState({ mousePressing: false, mouseX: -1, mouseY: -1 });
     }
   };
+  handleTouchStart = (e: React.TouchEvent<HTMLDivElement>): void => {
+    window.addEventListener("touchend", this.handleTouchEnd);
+    window.addEventListener("touchmove", this.handleTouchMove);
+    const { clientX, clientY } = e.touches[0];
+    this.setState({
+      mousePressing: true,
+      mouseX: clientX,
+      mouseY: clientY
+    });
+  };
+  handleTouchMove = (e: TouchEvent): void => {
+    if (this.state.mousePressing) {
+      const { clientX, clientY } = e.touches[0];
+      this.setState({ mouseX: clientX, mouseY: clientY });
+    }
+  };
+  handleTouchEnd = (): void => {
+    if (this.state.mousePressing) {
+      window.removeEventListener("touchend", this.handleTouchEnd);
+      window.removeEventListener("touchmove", this.handleTouchMove);
+
+      const { mouseX, mouseY } = this.state;
+      const { size, id, move } = this.props;
+      const x = mouseX - window.innerWidth / 2 + size / 2;
+      const y = mouseY - window.innerHeight / 2 + size / 2;
+      const col = 7 - (7 - Math.floor(x / (size / 8)));
+      const row = 7 - Math.floor(y / (size / 8));
+
+      move({ id, targetPosition: { col, row } });
+      this.setState({ mousePressing: false, mouseX: -1, mouseY: -1 });
+    }
+  };
   getStyle = (): CSSProperties => {
     if (this.state.mousePressing) return this.getMovingStyle();
     else return this.getStaticStyle();
@@ -91,7 +123,7 @@ class Piece extends Component<Props, IState> {
       <StyledPiece
         {...this.props.data}
         onMouseDown={this.handleMouseDown}
-        onMouseUp={this.handleMouseUp}
+        onTouchStart={this.handleTouchStart}
         style={this.getStyle()}
       />
     );

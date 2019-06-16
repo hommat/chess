@@ -14,6 +14,9 @@ const initState: BoardState = {
   movesTo50Rule: 0,
   size: 0,
   isGameOver: true,
+  isWinner: false,
+  isWinnerWhite: false,
+  isDraw: false,
   isWhiteMove: true
 };
 
@@ -43,7 +46,9 @@ const reducer: Reducer<BoardState> = (state = initState, action) => {
         pawnIdToChange: "-1",
         movesTo50Rule: 0,
         isGameOver: false,
-        isWhiteMove: true
+        isDraw: false,
+        isWhiteMove: true,
+        isWinner: false
       };
     case BoardActionTypes.MOVE:
       const isWhiteMove =
@@ -76,9 +81,6 @@ const reducer: Reducer<BoardState> = (state = initState, action) => {
         pawnIdToChange: "-1"
       };
     case BoardActionTypes.CHECK_MATE:
-      console.log(
-        `The winner is ${action.payload.isWhite ? "white" : "black"}`
-      );
       return {
         ...state,
         pieces: {
@@ -86,16 +88,18 @@ const reducer: Reducer<BoardState> = (state = initState, action) => {
           byId: action.payload.byId,
           allIds: action.payload.allIds
         },
-        isGameOver: true
+        isGameOver: true,
+        isWinner: true,
+        isWinnerWhite: action.payload.isWhite
       };
     case BoardActionTypes.TIMEOUT:
-      console.log(`The winner is ${action.payload ? "black" : "white"}`);
       return {
         ...state,
-        isGameOver: true
+        isGameOver: true,
+        isWinner: true,
+        isWinnerWhite: !action.payload
       };
     case BoardActionTypes.DRAW:
-      console.log("DRAW");
       return {
         ...state,
         pieces: {
@@ -103,7 +107,9 @@ const reducer: Reducer<BoardState> = (state = initState, action) => {
           byId: action.payload.byId,
           allIds: action.payload.allIds
         },
-        isGameOver: true
+        isGameOver: true,
+        isDraw: true,
+        isWinner: false
       };
     case BoardActionTypes.MOVE_FAILED:
     case BoardActionTypes.CHANGE_PAWN_FAILED:
