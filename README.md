@@ -13,7 +13,7 @@ Main goal of this project was to learn Typescript.
 * React
 * Redux
 * Typescript
-* Sass
+* Styled Components
 
 ## Status
 Project is _finished_.
